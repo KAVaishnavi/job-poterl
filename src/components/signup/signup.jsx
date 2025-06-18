@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useState } from 'react';
 import { Eye, EyeOff, User, Mail, Lock, Briefcase, MapPin, Phone } from 'lucide-react';
 import Link from 'next/link';

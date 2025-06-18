@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { Search, MapPin, Briefcase, Building, Users, TrendingUp, Star, ChevronDown, Filter, Bell, Upload, ExternalLink, Heart, Clock, DollarSign, ArrowRight, Eye, Zap, Target, Award, MessageCircle, Video, FileText, Calendar, Send, Bookmark, Share2, AlertTriangle, CheckCircle, Play, BarChart3, Globe, Shield, Sparkles, Phone, Mail, LinkedIn, Twitter, Facebook, Instagram, ChevronRight, Plus, Minus, RefreshCw, Settings, User, CreditCard, HelpCircle, X, Rocket, Lightbulb, GraduationCap, Code2, Palette, Megaphone } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react';
+import { Search, MapPin, Briefcase, Building, Users, TrendingUp, Star, ChevronDown, Filter, Bell, Upload, ExternalLink, Heart, Clock, DollarSign, ArrowRight, Eye, Zap, Target, Award, MessageCircle, Video, FileText, Calendar, Send, Bookmark, Share2, AlertTriangle, CheckCircle, Play, BarChart3, Globe, Shield, Sparkles, Phone, Mail, LinkedIn, Twitter, Facebook, Instagram, ChevronRight, Plus, Minus, RefreshCw, Settings, User, CreditCard, HelpCircle, X, Rocket, Lightbulb, GraduationCap, Code2, Palette, Megaphone, Mic } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function AdvancedJobPortalHero() {
+  const router = useRouter()
   const [jobTitle, setJobTitle] = useState('')
   const [location, setLocation] = useState('')
   const [showJobs, setShowJobs] = useState(false)
@@ -19,6 +21,7 @@ export default function AdvancedJobPortalHero() {
   const [currentSalary, setCurrentSalary] = useState('')
   const [expectedSalary, setExpectedSalary] = useState('')
   const [sampleJobs, setSampleJobs] = useState([])
+  const companiesSectionRef = useRef(null);
 
   // Add new state for animations and UI effects
   const [isSearchFocused, setIsSearchFocused] = useState(false)
@@ -422,7 +425,14 @@ export default function AdvancedJobPortalHero() {
               Find Jobs
             </button>
             <button 
-              onClick={handleShowCompanies}
+              onClick={() => {
+                setActiveTab('companies');
+                setShowCompanies(true);
+                setShowJobs(false);
+                setTimeout(() => {
+                  companiesSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }, 100); // Wait for tab to render
+              }}
               className="bg-white/20 hover:bg-white/30 px-2 md:px-3 py-1 rounded-full text-xs md:text-sm transition-colors flex items-center gap-1"
             >
               <Building className="w-3 h-3" />
@@ -809,7 +819,7 @@ export default function AdvancedJobPortalHero() {
                         </button>
                         {job.hasVideoInterview && (
                           <button
-                            onClick={handleVideoInterview}
+                            onClick={() => handleVideoInterview()}
                             className="bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded-lg font-medium transition flex items-center gap-2"
                           >
                             <Video className="w-4 h-4" />
@@ -1040,25 +1050,114 @@ export default function AdvancedJobPortalHero() {
           {/* Video Interview Modal */}
           {showVideoInterview && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-              <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-4xl relative">
                 <button
                   onClick={() => setShowVideoInterview(false)}
-                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
                 >
                   <X className="w-6 h-6" />
                 </button>
-                <h3 className="text-2xl font-bold text-purple-700 mb-4">Video Interview</h3>
-                <p className="mb-4 text-gray-700">
-                  Prepare for your video interview. Make sure your camera and microphone are working.
-                </p>
-                <div className="flex flex-col items-center gap-4">
-                  <Video className="w-16 h-16 text-purple-500" />
-                  <button
-                    onClick={() => alert('Starting video interview...')}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold"
-                  >
-                    Start Interview
-                  </button>
+                
+                <div className="text-center mb-6">
+                  <h3 className="text-3xl font-bold text-purple-700 mb-2">🎥 Video Interview</h3>
+                  <p className="text-gray-600">Your video interview is about to begin</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Video Preview */}
+                  <div className="bg-gray-900 rounded-xl p-4">
+                    <div className="relative bg-gray-800 rounded-lg aspect-video mb-4">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="w-24 h-24 bg-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span className="text-white text-xl font-bold">You</span>
+                          </div>
+                          <p className="text-white text-sm">Camera Preview</p>
+                        </div>
+                      </div>
+                      <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                        Live
+                      </div>
+                    </div>
+                    
+                    {/* Camera Controls */}
+                    <div className="flex items-center justify-center space-x-4">
+                      <button className="p-3 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors">
+                        <Video className="w-5 h-5 text-white" />
+                      </button>
+                      <button className="p-3 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors">
+                        <Mic className="w-5 h-5 text-white" />
+                      </button>
+                      <button className="p-3 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors">
+                        <Settings className="w-5 h-5 text-white" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Interview Info */}
+                  <div className="space-y-6">
+                    <div className="bg-purple-50 rounded-xl p-4">
+                      <h4 className="font-semibold text-purple-800 mb-2">Interview Details</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-purple-600" />
+                          <span>Duration: 30 minutes</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-purple-600" />
+                          <span>Interviewer: AI Assistant</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-purple-600" />
+                          <span>Format: Technical + Behavioral</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 rounded-xl p-4">
+                      <h4 className="font-semibold text-blue-800 mb-2">Quick Tips</h4>
+                      <ul className="space-y-2 text-sm text-blue-700">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>Look at the camera, not the screen</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>Speak clearly and at a moderate pace</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>Have good posture and sit up straight</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>Prepare specific examples using STAR method</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          setShowVideoInterview(false)
+                          router.push('/interview-prep')
+                        }}
+                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold transition"
+                      >
+                        Practice First
+                      </button>
+                      <button
+                        onClick={() => {
+                          alert('🎥 Starting video interview...\n\nYou will be connected to an AI interviewer who will ask you technical and behavioral questions.\n\nGood luck!')
+                          setShowVideoInterview(false)
+                        }}
+                        className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2"
+                      >
+                        <Video className="w-5 h-5" />
+                        Start Interview
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
